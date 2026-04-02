@@ -15,6 +15,10 @@ public class Main extends ApplicationAdapter {
         batch = new SpriteBatch();
         image = new Texture("libgdx.png");
         System.out.println("Mon jeu de casse-tête est lancé !");
+        LevelManager levelManager = new LevelManager();
+        levelManager.loadLevels();
+        Level level1 = levelManager.getLevel(1);
+        System.out.println("Niveau chargé : " + level1.name);
     }
 
     @Override

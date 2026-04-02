@@ -1,0 +1,17 @@
+{
+  "id": 1,
+  "name": "Conjuration d'une pierre philosophale",
+  "puissance": [
+  	1,
+  	1,
+  	1,
+  	1,
+  	1,
+  	1
+  ],
+  "objectifs": [
+  	5000, 
+  	4500, 
+  	4000
+  ]
+}
