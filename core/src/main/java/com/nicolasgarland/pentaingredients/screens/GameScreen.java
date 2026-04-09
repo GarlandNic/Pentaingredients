@@ -88,7 +88,7 @@ public class GameScreen implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen(new LevelSelectScreen(game));
             }
         });
         pentagrStage.addActor(backButton);

@@ -1,0 +1,338 @@
+{
+	{
+		id: 1,
+		name: "Persil en branche",
+		famille: VEGETALE,
+		cout: 100,
+		energies: [1,0,0,0,0,0]
+	},
+	{
+		id: 2,
+		name: "Gousse d'ail",
+		famille: VEGETALE,
+		cout: 100,
+		energies: [0,1,0,0,0,0]
+	},
+	{
+		id: 3,
+		name: "Couronne de laurier",
+		famille: VEGETALE,
+		cout: 100,
+		energies: [0,0,1,0,0,0]
+	},
+	{
+		id: 4,
+		name: "Feuille de chou",
+		famille: VEGETALE,
+		cout: 100,
+		energies: [0,0,0,1,0,0]
+	},
+	{
+		id: 5,
+		name: "Sable extra-fin",
+		famille: MINERALE,
+		cout: 100,
+		energies: [0,0,0,0,1,0]
+	},
+	{
+		id: 6,
+		name: "Toile d'araignée",
+		famille: ANIMALE,
+		cout: 100,
+		energies: [0,0,0,0,0,1]
+	},
+	{
+		id: 7,
+		name: "Amanite tue-mouche",
+		famille: VEGETALE,
+		cout: 300,
+		energies: [1,0,0,0,0,1]
+	},
+	{
+		id: 8,
+		name: "Bave de crapaud",
+		famille: ANIMALE,
+		cout: 300,
+		energies: [0,1,0,1,0,0]
+	},
+	{
+		id: 9,
+		name: "Poil de Yack",
+		famille: ANIMALE,
+		cout: 300,
+		energies: [0,0,1,0,0,1]
+	},
+	{
+		id: 10,
+		name: "Jarre de souffre",
+		famille: MINERALE,
+		cout: 300,
+		energies: [0,0,1,0,1,0]
+	},
+	{
+		id: 11,
+		name: "Pierre ponce",
+		famille: MINERALE,
+		cout: 200,
+		energies: [2,0,0,0,0,0]
+	},
+	{
+		id: 12,
+		name: "Poudre de granit",
+		famille: MINERALE,
+		cout: 200,
+		energies: [0,2,0,0,0,0]
+	},
+	{
+		id: 13,
+		name: "Trèfle à quatre feuilles",
+		famille: MAGIQUE,
+		cout: 300,
+		energies: [0,0,0,1,1,0]
+	},
+	{
+		id: 14,
+		name: "Gui cueilli à la cerpe",
+		famille: MAGIQUE,
+		cout: 300,
+		energies: [0,0,1,0,1,0]
+	},
+	{
+		id: 15,
+		name: "Coeur de chêne millénaire",
+		famille: VEGETALE,
+		cout: 400,
+		energies: [0,2,0,1,0,0]
+	},
+	{
+		id: 16,
+		name: "Tulipe noire",
+		famille: VEGETALE,
+		cout: 500,
+		energies: [0,0,1,1,0,1]
+	},
+	{
+		id: 17,
+		name: "Oeil de chat",
+		famille: ANIMALE,
+		cout: 500,
+		energies: [0,0,1,0,1,1]
+	},
+	{
+		id: 18,
+		name: "Venin de vipère",
+		famille: ANIMALE,
+		cout: 500,
+		energies: [1,0,1,1,0,0]
+	},
+	{
+		id: 19,
+		name: "Aile de chauve-souris",
+		famille: ANIMALE,
+		cout: 400,
+		energies: [0,0,0,0,2,1]
+	},
+	{
+		id: 20,
+		name: "Tête de bouc",
+		famille: ANIMALE,
+		cout: 500,
+		energies: [1,1,0,0,0,1]
+	},
+	{
+		id: 21,
+		name: "Pierre de foudre",
+		famille: MINERALE,
+		cout: 400,
+		energies: [0,1,2,0,0,0]
+	},
+	{
+		id: 22,
+		name: "Galium en surfusion",
+		famille: MINERALE,
+		cout: 400,
+		energies: [2,0,0,0,0,1]
+	},
+	{
+		id: 23,
+		name: "Miroir de l'âme",
+		famille: MAGIQUE,
+		cout: 500,
+		energies: [0,1,1,0,1,0]
+	},
+	{
+		id: 24,
+		name: "Mandragore en pot",
+		famille: MAGIQUE,
+		cout: 400,
+		energies: [0,0,0,2,0,1]
+	},
+	{
+		id: 25,
+		name: "Racine de mangrove",
+		famille: VEGETALE,
+		cout: 600,
+		energies: [0,1,0,2,0,1]
+	},
+	{
+		id: 26,
+		name: "Plante carnivore",
+		famille: VEGETALE,
+		cout: 600,
+		energies: [1,0,0,1,0,2]
+	},
+	{
+		id: 27,
+		name: "Sang de sangsue",
+		famille: ANIMALE,
+		cout: 600,
+		energies: [1,1,0,0,0,2]
+	},
+	{
+		id: 28,
+		name: "Serre d'aigle",
+		famille: ANIMALE,
+		cout: 500,
+		energies: [0,0,1,0,3,0]
+	},
+	{
+		id: 29,
+		name: "Fiole de vif-argent",
+		famille: MINERALE,
+		cout: 600,
+		energies: [1,0,2,0,1,0]
+	},
+	{
+		id: 30,
+		name: "Rubis vert",
+		famille: MINERALE,
+		cout: 600,
+		energies: [0,2,1,1,0,0]
+	},
+	{
+		id: 31,
+		name: "Poudre de magnésium",
+		famille: MINERALE,
+		cout: 500,
+		energies: [2,0,2,0,0,0]
+	},
+	{
+		id: 32,
+		name: "Poussière d'étoile",
+		famille: MAGIQUE,
+		cout: 600,
+		energies: [1,1,0,0,2,0]
+	},
+	{
+		id: 33,
+		name: "Canine de vampire",
+		famille: MAGIQUE,
+		cout: 600,
+		energies: [1,0,1,0,0,2]
+	},
+	{
+		id: 34,
+		name: "Orchidée chantante",
+		famille: MAGIQUE,
+		cout: 600,
+		energies: [0,1,0,2,1,0]
+	},
+	{
+		id: 35,
+		name: "Fleur d'Edelweiss",
+		famille: VEGETALE,
+		cout: 800,
+		energies: [0,1,1,2,1,0]
+	},
+	{
+		id: 36,
+		name: "Ecorce de baobab",
+		famille: VEGETALE,
+		cout: 700,
+		energies: [0,3,0,1,0,1]
+	},
+	{
+		id: 37,
+		name: "Langue de salamandre",
+		famille: ANIMALE,
+		cout: 700,
+		energies: [3,0,1,0,0,1]
+	},
+	{
+		id: 38,
+		name: "Crocs de crocodile",
+		famille: ANIMALE,
+		cout: 800,
+		energies: [0,1,1,2,0,1]
+	},
+	{
+		id: 39,
+		name: "Pierre de lune",
+		famille: MINERALE,
+		cout: 800,
+		energies: [0,1,1,0,2,1]
+	},
+	{
+		id: 40,
+		name: "Lingot d'orichalque",
+		famille: MAGIQUE,
+		cout: 800,
+		energies: [1,0,2,0,1,1]
+	},
+	{
+		id: 41,
+		name: "Plume de phénix",
+		famille: MAGIQUE,
+		cout: 600,
+		energies: [3,0,0,0,2,0]
+	},
+	{
+		id: 42,
+		name: "Corne de licorne",
+		famille: MAGIQUE,
+		cout: 800,
+		energies: [0,1,0,2,1,1]
+	},
+	{
+		id: 43,
+		name: "Fleur de lotus",
+		famille: VEGETALE,
+		cout: 900,
+		energies: [0,0,1,1,3,1]
+	},
+	{
+		id: 44,
+		name: "Tentacule de pieuvre",
+		famille: ANIMALE,
+		cout: 700,
+		energies: [0,0,0,4,0,2]
+	},
+	{
+		id: 45,
+		name: "Calice en électrum",
+		famille: MINERALE,
+		cout: 1000,
+		energies: [1,1,1,0,2,1]
+	},
+	{
+		id: 46,
+		name: "Diamant arc-en-ciel",
+		famille: MINERALE,
+		cout: 1100,
+		energies: [1,1,1,1,1,1]
+	},
+	{
+		id: 47,
+		name: "Crâne de cristal",
+		famille: MAGIQUE,
+		cout: 900,
+		energies: [1,1,3,0,0,1]
+	},
+	{
+		id: 48,
+		name: "Ecaille de dragon",
+		famille: MAGIQUE,
+		cout: 700,
+		energies: [3,3,0,0,0,0]
+	}
+}
