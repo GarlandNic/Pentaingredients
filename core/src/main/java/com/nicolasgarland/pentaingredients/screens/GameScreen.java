@@ -1,5 +1,7 @@
 package com.nicolasgarland.pentaingredients.screens;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -7,23 +9,34 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.nicolasgarland.pentaingredients.Ingredient;
+import com.nicolasgarland.pentaingredients.IngredientsList;
 import com.nicolasgarland.pentaingredients.Level;
 import com.nicolasgarland.pentaingredients.Main;
+import com.nicolasgarland.pentaingredients.Positions;
+import com.nicolasgarland.pentaingredients.actors.InventorySlot;
 
 public class GameScreen implements Screen {
 	private final Main game;
+	
     private Stage pentagrStage;
     private Stage etagereStage;
     private Skin skin;
     private Texture background;
+    
     private int levelNb;
     private Level thisLevel;
+    private Positions thisPositions;
+    private List<Ingredient> listOfIngredients;
 
 	public GameScreen(Main game, int levelNb) {
         this.game = game;
@@ -34,6 +47,8 @@ public class GameScreen implements Screen {
         } else {
         	Gdx.app.log("ERROR", "in loaging level : " + Gdx.files.internal(filePath).file().getAbsolutePath());
         }
+        this.thisPositions = (new Positions().loadPositions(levelNb));
+        this.listOfIngredients = (new IngredientsList()).loadIngredientsList();
 	}
 
 	@Override
@@ -72,8 +87,24 @@ public class GameScreen implements Screen {
 	}
 
 	private void addActorsToEtagereStage() {
-		// TODO Auto-generated method stub
-		
+//		Texture slotTextureFull = new Texture(Gdx.files.internal("slot.png"));
+//        slotTexture = new TextureRegion(slotTextureFull);
+
+		InventorySlot[][] slots = new InventorySlot[10][10];
+        Table inventoryTable = new Table();
+        inventoryTable.setPosition(50, 50);
+
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+            	int a = thisPositions.etagere[row][col];
+            	if(a != 0) slots[row][col].setItem(listOfIngredients.get(a));
+//                slots[row][col] = new InventorySlot(slotTexture);
+                inventoryTable.add(slots[row][col]).size(InventorySlot.SLOT_SIZE);
+            }
+            inventoryTable.row();  // Nouvelle ligne après chaque rangée
+        }
+
+        etagereStage.addActor(inventoryTable);
 	}
 
 	private void addActorsToPentagrStage() {
@@ -88,6 +119,7 @@ public class GameScreen implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+            	thisPositions.savePosition(levelNb);
                 game.setScreen(new LevelSelectScreen(game));
             }
         });

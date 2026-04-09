@@ -1,5 +1,11 @@
 package com.nicolasgarland.pentaingredients;
 
+import java.util.List;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Json;
+
 public class Ingredient {
 	public static enum Famille {
 		VEGETALE,
@@ -22,7 +28,16 @@ public class Ingredient {
 		this.famille = fam;
 		this.cout = cout;
 		this.energies = energies;
+	}
+
+	public Texture getIcon() {
+		String filePath = "assets/ingredients/ingr" + this.id + ".png";
+        if (Gdx.files.internal(filePath).exists()) {
+        	return (new Texture(Gdx.files.internal(filePath)));
+        } else {
+        	Gdx.app.log("ERROR", "in loaging img : " + Gdx.files.internal(filePath).file().getAbsolutePath());
+        	return null;
+        }
 	};
-	
 
 }
