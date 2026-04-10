@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nicolasgarland.pentaingredients.Ingredient;
 import com.nicolasgarland.pentaingredients.IngredientsList;
@@ -30,6 +32,7 @@ public class GameScreen implements Screen {
 	
     private Stage pentagrStage;
     private Stage etagereStage;
+//	private Stage metaStage;
     private Skin skin;
     private Texture background;
     
@@ -45,16 +48,16 @@ public class GameScreen implements Screen {
         if (Gdx.files.internal(filePath).exists()) {
             this.thisLevel = (new Json()).fromJson(Level.class, Gdx.files.internal(filePath));
         } else {
-        	Gdx.app.log("ERROR", "in loaging level : " + Gdx.files.internal(filePath).file().getAbsolutePath());
+        	Gdx.app.log("ERROR", "in loading level : " + Gdx.files.internal(filePath).file().getAbsolutePath());
         }
         this.thisPositions = (new Positions().loadPositions(levelNb));
-//        this.listOfIngredients = (new IngredientsList()).loadIngredientsList();
+
         this.listOfIngredients = null;
         filePath = "assets/ingredients.lst";
         if (Gdx.files.internal(filePath).exists()) {
         	this.listOfIngredients = (new Json()).fromJson(List.class, Ingredient.class, Gdx.files.internal(filePath));
         } else {
-        	Gdx.app.log("ERROR", "in loaging ingredients list : " + Gdx.files.internal(filePath).file().getAbsolutePath());
+        	Gdx.app.log("ERROR", "in loading ingredients list : " + Gdx.files.internal(filePath).file().getAbsolutePath());
         }
 	}
 
@@ -64,66 +67,102 @@ public class GameScreen implements Screen {
         background = new Texture(Gdx.files.internal("assets/menu_background.png"));
 
         // Créer deux Viewport (un pour chaque moitié de l'écran)
-        ScreenViewport leftViewport = new ScreenViewport();
-        ScreenViewport rightViewport = new ScreenViewport();
+//        FitViewport leftViewport = new FitViewport(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
+//        FitViewport rightViewport = new FitViewport(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
+        FitViewport leftViewport = new FitViewport(800, 1200);
+        FitViewport rightViewport = new FitViewport(800, 1200);
+//        FitViewport viewport = new FitViewport(1600, 1200);
 
         // Définir les tailles des Viewport
-        leftViewport.setWorldSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
-        rightViewport.setWorldSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
-
-        // Créer les Stage
-        pentagrStage = new Stage(leftViewport);
-        etagereStage = new Stage(rightViewport);
+//        leftViewport.setWorldSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
+//        rightViewport.setWorldSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
 
         // Définir les zones de caméra pour chaque Stage
         leftViewport.setScreenBounds(0, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
-        rightViewport.setScreenBounds(Gdx.graphics.getWidth() / 2, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
+        rightViewport.setScreenBounds(Gdx.graphics.getWidth() / 2, 0, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight());
+
+        // Créer les Stage
+//        metaStage = new Stage(viewport);
+        pentagrStage = new Stage(leftViewport);
+        etagereStage = new Stage(rightViewport);
 
         // charger la skin
         skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
 
         // Ajouter des acteurs (boutons, labels, etc.) à chaque Stage
+//        Table metaTable = new Table();
+//        metaTable.setFillParent(true);
+//
+//      metaTable.add(addActorsToPentagrStage());
+//      metaTable.add(addActorsToEtagereStage());
         addActorsToPentagrStage();
         addActorsToEtagereStage();
+//        
+//        metaStage.addActor(metaTable);
 
         // Définir les InputProcessor pour chaque Stage
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(pentagrStage);
-        multiplexer.addProcessor(etagereStage);
-        Gdx.input.setInputProcessor(multiplexer);
+//        InputMultiplexer multiplexer = new InputMultiplexer();
+//        multiplexer.addProcessor(pentagrStage);
+//        multiplexer.addProcessor(etagereStage);
+//        Gdx.input.setInputProcessor(multiplexer);
 	}
 
-	private void addActorsToEtagereStage() {
-//		Texture slotTextureFull = new Texture(Gdx.files.internal("slot.png"));
-//        slotTexture = new TextureRegion(slotTextureFull);
+	private Table addActorsToEtagereStage() {
+		Table mainTable = new Table();
+        mainTable.setFillParent(true);
+
+		// titre du niveau
+		Label titleLabel = new Label("Etagères", skin, "title");
+//		titleLabel.setPosition(etagereStage.getWidth()/2 - titleLabel.getWidth()/2, etagereStage.getHeight()-50);
+//		etagereStage.addActor(titleLabel);
+		mainTable.add(titleLabel).center();
+	    mainTable.row();
+		
+	    // table des ingrédients sur les étagères
+		Texture slotTextureFull = new Texture(Gdx.files.internal("assets/skin/slot.png"));
 
 		InventorySlot[][] slots = new InventorySlot[10][10];
         Table inventoryTable = new Table();
-        inventoryTable.setPosition(50, 50);
+//        inventoryTable.setPosition(etagereStage.getWidth()/2, etagereStage.getHeight()/2); // position du centre je pense
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-//            	slots[row][col] = new InventorySlot(slotTexture);
-            	slots[row][col] = new InventorySlot();
+            	slots[row][col] = new InventorySlot(new TextureRegion(slotTextureFull));
             	int idIng = thisPositions.etagere[row][col];
             	if(idIng != 0) slots[row][col].setItem(listOfIngredients.get(idIng-1));
                 inventoryTable.add(slots[row][col]).size(InventorySlot.SLOT_SIZE);
             }
             inventoryTable.row();  // Nouvelle ligne après chaque rangée
         }
+        mainTable.add(inventoryTable).center();
+        mainTable.row();
+        
+        // description de l'ingrédient sélectionné
+		Label ingrLabel = new Label("Ingrédient sélectionné :", skin, "title");
+		mainTable.add(ingrLabel).center();
+        mainTable.row();
 
-        etagereStage.addActor(inventoryTable);
+        etagereStage.addActor(mainTable);
+        return mainTable;
 	}
 
-	private void addActorsToPentagrStage() {
+	private Table addActorsToPentagrStage() {
+		Table mainTable = new Table();
+        mainTable.setFillParent(true);
+
 		// titre du niveau
 		Label titleLabel = new Label(thisLevel.name, skin, "title");
-		titleLabel.setPosition(pentagrStage.getViewport().getScreenWidth()/2 - titleLabel.getWidth()/2, pentagrStage.getHeight()-50);
-		pentagrStage.addActor(titleLabel);
+//		titleLabel.setPosition(pentagrStage.getWidth()/2 - titleLabel.getWidth()/2, pentagrStage.getHeight()-50);
+//		pentagrStage.addActor(titleLabel);
+		mainTable.add(titleLabel).colspan(2).center();
+	    mainTable.row();
 		
+	    // image pentagramme + 10 slots
+	    mainTable.row();
+	    
 		// bouton retour
         TextButton backButton = new TextButton("Retour", skin);
-        backButton.setPosition(20, 20);
+//        backButton.setPosition(20, 20);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -131,7 +170,11 @@ public class GameScreen implements Screen {
                 game.setScreen(new LevelSelectScreen(game));
             }
         });
-        pentagrStage.addActor(backButton);
+        mainTable.add(backButton).width(200).height(60).pad(10);
+//      pentagrStage.addActor(backButton);
+        
+      pentagrStage.addActor(mainTable);
+        return mainTable;
 	}
 
 	@Override
@@ -146,40 +189,41 @@ public class GameScreen implements Screen {
 
         etagereStage.act(delta);
         etagereStage.draw();
+        
+//        metaStage.act(delta);
+//        metaStage.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-        pentagrStage.getViewport().update(width/2, height, true);
-        etagereStage.getViewport().update(width/2, height, true);
-        
-        // Repositionner les Viewport
-        pentagrStage.getViewport().setScreenBounds(0, 0, width / 2, height);
-        etagereStage.getViewport().setScreenBounds(width / 2, 0, width / 2, height);
+	    // Mettre à jour les Viewports
+	    pentagrStage.getViewport().update(width / 2, height, true);
+	    etagereStage.getViewport().update(width / 2, height, true);
+
+	    // Redéfinir les ScreenBounds
+	    pentagrStage.getViewport().setScreenBounds(0, 0, width / 2, height);
+	    etagereStage.getViewport().setScreenBounds(width / 2, 0, width / 2, height);
+//		metaStage.getViewport().update(width, height, true);
+//		metaStage.getViewport().setScreenBounds(0, 0, width, height);
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
         etagereStage.dispose();
         pentagrStage.dispose();
+//        metaStage.dispose();
         skin.dispose();
         background.dispose();
 	}

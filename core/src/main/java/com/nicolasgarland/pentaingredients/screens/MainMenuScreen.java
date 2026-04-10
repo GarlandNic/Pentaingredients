@@ -37,7 +37,7 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         // Charger la skin
-        Gdx.app.log("DEBUG", "Chemin : " + Gdx.files.internal("assets/skin/uiskin.json").file().getAbsolutePath());
+//        Gdx.app.log("DEBUG", "Chemin : " + Gdx.files.internal("assets/skin/uiskin.json").file().getAbsolutePath());
         skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
 //        skin = createFallbackSkin();
 

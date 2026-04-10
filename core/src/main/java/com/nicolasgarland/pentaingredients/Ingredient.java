@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Json;
 
 public class Ingredient {
@@ -19,6 +20,8 @@ public class Ingredient {
 	public Famille famille;
 	public int cout;
 	public int[] energies;
+	public Texture icon; // Icône de l'objet
+    
 	
 	public Ingredient() {};
 	
@@ -28,12 +31,15 @@ public class Ingredient {
 		this.famille = fam;
 		this.cout = cout;
 		this.energies = energies;
+		this.icon = getIcon();
 	}
 
 	public Texture getIcon() {
+		if(icon != null) return icon;
 		String filePath = "assets/ingredients/ingr" + this.id + ".png";
         if (Gdx.files.internal(filePath).exists()) {
-        	return (new Texture(Gdx.files.internal(filePath)));
+        	icon = (new Texture(Gdx.files.internal(filePath)));
+        	return icon;
         } else {
         	Gdx.app.log("ERROR", "in loaging img : " + Gdx.files.internal(filePath).file().getAbsolutePath());
         	return null;

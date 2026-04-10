@@ -11,7 +11,6 @@ public class IngredientsList {
 	
 	public IngredientsList() {
 		this.listOfIngredients = null;
-		
 	}
 	
 	public List<Ingredient> loadIngredientsList() {
