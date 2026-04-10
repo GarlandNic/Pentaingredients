@@ -1,4 +1,4 @@
-{
+[
 	{
 		id: 1,
 		name: "Persil en branche",
@@ -335,4 +335,4 @@
 		cout: 700,
 		energies: [3,3,0,0,0,0]
 	}
-}
+]

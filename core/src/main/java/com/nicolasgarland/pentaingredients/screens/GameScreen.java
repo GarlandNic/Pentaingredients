@@ -48,7 +48,14 @@ public class GameScreen implements Screen {
         	Gdx.app.log("ERROR", "in loaging level : " + Gdx.files.internal(filePath).file().getAbsolutePath());
         }
         this.thisPositions = (new Positions().loadPositions(levelNb));
-        this.listOfIngredients = (new IngredientsList()).loadIngredientsList();
+//        this.listOfIngredients = (new IngredientsList()).loadIngredientsList();
+        this.listOfIngredients = null;
+        filePath = "assets/ingredients.lst";
+        if (Gdx.files.internal(filePath).exists()) {
+        	this.listOfIngredients = (new Json()).fromJson(List.class, Ingredient.class, Gdx.files.internal(filePath));
+        } else {
+        	Gdx.app.log("ERROR", "in loaging ingredients list : " + Gdx.files.internal(filePath).file().getAbsolutePath());
+        }
 	}
 
 	@Override
@@ -96,9 +103,10 @@ public class GameScreen implements Screen {
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-            	int a = thisPositions.etagere[row][col];
-            	if(a != 0) slots[row][col].setItem(listOfIngredients.get(a));
-//                slots[row][col] = new InventorySlot(slotTexture);
+//            	slots[row][col] = new InventorySlot(slotTexture);
+            	slots[row][col] = new InventorySlot();
+            	int idIng = thisPositions.etagere[row][col];
+            	if(idIng != 0) slots[row][col].setItem(listOfIngredients.get(idIng-1));
                 inventoryTable.add(slots[row][col]).size(InventorySlot.SLOT_SIZE);
             }
             inventoryTable.row();  // Nouvelle ligne après chaque rangée

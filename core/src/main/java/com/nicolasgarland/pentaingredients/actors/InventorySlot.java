@@ -13,6 +13,21 @@ public class InventorySlot extends Actor {
     private Ingredient item;              // Objet dans cette case (null si vide)
     private TextureRegion slotTexture;       // Texture de fond de la case
     private boolean isSelected;               // Case sélectionnée ?
+    
+    public InventorySlot() {
+        this.slotTexture = null;
+        this.item = null;
+        this.isSelected = false;
+        setSize(SLOT_SIZE, SLOT_SIZE);
+
+        // Ajouter un écouteur pour les clics
+        addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isSelected = !isSelected;  // Basculer la sélection
+            }
+        });
+    }
 
     public InventorySlot(TextureRegion slotTexture) {
         this.slotTexture = slotTexture;
