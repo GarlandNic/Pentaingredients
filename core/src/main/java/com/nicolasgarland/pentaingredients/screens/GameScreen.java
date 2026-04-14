@@ -32,6 +32,7 @@ import com.nicolasgarland.pentaingredients.Positions;
 import com.nicolasgarland.pentaingredients.actors.InventorySlot;
 
 public class GameScreen implements Screen {
+	private final int PENTAILLE = 650;
 	private final Main game;
 	
 	private Stage metaStage;
@@ -135,8 +136,8 @@ public class GameScreen implements Screen {
         ingrSelectedTable.row();
         if(ingrSelected != null) {
         	Image imgIcon = new Image(ingrSelected.icon);
-        	imgIcon.setSize(64, 64);// pourquoi ça ne marche pas ??
-            ingrSelectedTable.add(imgIcon).align(Align.left);
+
+            ingrSelectedTable.add(imgIcon).size(64).align(Align.left);
             ingrSelectedTable.add(new Label(ingrSelected.name, skin, "default")).align(Align.left);
             ingrSelectedTable.add(new Label(ingrSelected.famille.toString(), skin, "default")).align(Align.right);
             ingrSelectedTable.row();
@@ -149,7 +150,7 @@ public class GameScreen implements Screen {
             ingrSelectedTable.add(elemTable).colspan(3).center();
             ingrSelectedTable.row();
         } else {
-            ingrSelectedTable.add(new Image(slotTextureFull)).align(Align.left);
+            ingrSelectedTable.add(new Image(slotTextureFull)).size(64).align(Align.left);
             ingrSelectedTable.add(new Label("Aucun ingrédient sélectionné", skin, "default")).align(Align.left);
             ingrSelectedTable.add().align(Align.right);
             ingrSelectedTable.row();
@@ -188,14 +189,17 @@ public class GameScreen implements Screen {
         Table elemTable = new Table();
         for(int i=0 ; i<6 ; i++) {
         	for(int j=0 ; j < thisLevel.puissance[i] ; j++) {
-        		elemTable.add(new Image(elements[i]));
+        		Image img = new Image(elements[i]);
+        		elemTable.add(img).width(64).height(64);
+        	    Gdx.app.log("DEBUG", "element n°"+i+" size : " + img.getWidth()+" x "+img.getHeight());
         	}
         }
+        elemTable.row();
         levelTable.add(elemTable).colspan(3).center();
 		levelTable.row();
-		levelTable.add(new Label(""+thisLevel.objectifs[0], skin, "default"));
-		levelTable.add(new Label(""+thisLevel.objectifs[1], skin, "default"));
-		levelTable.add(new Label(""+thisLevel.objectifs[2], skin, "default"));
+		levelTable.add(new Label(""+thisLevel.objectifs[0], skin, "default")).center();
+		levelTable.add(new Label(""+thisLevel.objectifs[1], skin, "default")).center();
+		levelTable.add(new Label(""+thisLevel.objectifs[2], skin, "default")).center();
 		levelTable.row();
 	    
 		mainTable.add(levelTable).colspan(2).center();
@@ -207,6 +211,8 @@ public class GameScreen implements Screen {
 	    Image img = new Image(new Texture(Gdx.files.internal("assets/skin/Pentagramme.PNG")));
 	    Gdx.app.log("DEBUG", "pentagramme size : " + img.getWidth()+" x "+img.getHeight());
 //	    img.setSize(909, 908);
+	    img.setWidth(PENTAILLE);
+	    img.setHeight(PENTAILLE);
 	    pentagramGroup.addActor(img);
 	    
 	    // 10 slots
@@ -223,8 +229,8 @@ public class GameScreen implements Screen {
 	    	InventorySlot slotP = new InventorySlot(slotTexture);
 	    	int idIng = thisPositions.pentaPuissance[i];
 	    	if(idIng != 0) slotP.setItem(listOfIngredients.get(idIng-1));
-	    	slotP.setPosition(	909/2*(1+slotPositionsPuissance[i][0])-slotP.getWidth()/2, 
-	    						908/2*(1+slotPositionsPuissance[i][1])-slotP.getHeight()/2);
+	    	slotP.setPosition(	PENTAILLE/2*(1+slotPositionsPuissance[i][0])-slotP.getWidth()/2, 
+	    						PENTAILLE/2*(1+slotPositionsPuissance[i][1])-slotP.getHeight()/2);
 	    	pentagramGroup.addActor(slotP);
 	    }
 	    
@@ -239,13 +245,13 @@ public class GameScreen implements Screen {
 	    	InventorySlot slotC = new InventorySlot(slotTexture);
 	    	int idIng = thisPositions.pentaControle[i];
 	    	if(idIng != 0) slotC.setItem(listOfIngredients.get(idIng-1));
-	    	slotC.setPosition(	909/2*(1+slotPositionsControle[i][0])-slotC.getWidth()/2, 
-	    						908/2*(1+slotPositionsControle[i][1])-slotC.getHeight()/2);
+	    	slotC.setPosition(	PENTAILLE/2*(1+slotPositionsControle[i][0])-slotC.getWidth()/2, 
+	    						PENTAILLE/2*(1+slotPositionsControle[i][1])-slotC.getHeight()/2);
 	    	pentagramGroup.addActor(slotC);
 	    }
 //	    pentagramGroup.setSize(1000, 1000); // comment changer la taille ??
     	
-	    mainTable.add(pentagramGroup).colspan(2).size(909, 908);
+	    mainTable.add(pentagramGroup).pad(50).colspan(2).size(PENTAILLE, PENTAILLE);
 	    mainTable.row();
 	    
 		// bouton retour
