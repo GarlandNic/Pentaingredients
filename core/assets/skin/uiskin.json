@@ -1,5 +1,7 @@
 {
-BitmapFont: { default-font: { file: default.fnt } },
+BitmapFont: { 
+	arial-font: { file: assets/fonts/arial.fnt },
+	default-font: { file: default.fnt } },
 Color: {
 	green: { a: 1, b: 0, g: 1, r: 0 },
 	white: { a: 1, b: 1, g: 1, r: 1 },
@@ -15,7 +17,7 @@ ButtonStyle: {
 	toggle: { parent: default, checked: default-round-down }
 },
 TextButtonStyle: {
-	default: { parent: default, font: default-font, fontColor: white, disabledFontColor: gray },
+	default: { parent: default, font: arial-font, fontColor: white, disabledFontColor: gray },
 	toggle: { parent: default, checked: default-round-down, downFontColor: red }
 },
 ScrollPaneStyle: {
@@ -23,9 +25,9 @@ ScrollPaneStyle: {
 },
 SelectBoxStyle: {
 	default: {
-		font: default-font, fontColor: white, background: default-select,
+		font: arial-font, fontColor: white, background: default-select,
 		scrollStyle: default,
-		listStyle: { font: default-font, selection: default-select-selection }
+		listStyle: { font: arial-font, selection: default-select-selection }
 	}
 },
 SplitPaneStyle: {
@@ -33,7 +35,7 @@ SplitPaneStyle: {
 	default-horizontal: { handle: default-splitpane }
 },
 WindowStyle: {
-	default: { titleFont: default-font, background: default-window, titleFontColor: white },
+	default: { titleFont: arial-font, background: default-window, titleFontColor: white },
 	dialog: { parent: default, stageBackground: dialogDim }
 },
 ProgressBarStyle: {
@@ -45,17 +47,17 @@ SliderStyle: {
 	default-vertical: { parent: default-vertical }
 },
 LabelStyle: {
-	title: { font: default-font, fontColor: red },
-	default: { font: default-font, fontColor: white }
+	title: { font: arial-font, fontColor: red },
+	default: { font: arial-font, fontColor: white }
 },
 TextFieldStyle: {
-	default: { selection: selection, background: textfield, font: default-font, fontColor: white, cursor: cursor }
+	default: { selection: selection, background: textfield, font: arial-font, fontColor: white, cursor: cursor }
 },
 CheckBoxStyle: {
-	default: { checkboxOn: check-on, checkboxOff: check-off, font: default-font, fontColor: white }
+	default: { checkboxOn: check-on, checkboxOff: check-off, font: arial-font, fontColor: white }
 },
 ListStyle: {
-	default: { fontColorUnselected: white, selection: selection, fontColorSelected: white, font: default-font }
+	default: { fontColorUnselected: white, selection: selection, fontColorSelected: white, font: arial-font }
 },
 TouchpadStyle: {
 	default: { background: default-pane, knob: default-round-large }
@@ -65,7 +67,7 @@ TreeStyle: {
 },
 TextTooltipStyle: {
 	default: {
-		label: { font: default-font, fontColor: white },
+		label: { font: arial-font, fontColor: white },
 		background: default-pane, wrapWidth: 150
 	}
 },

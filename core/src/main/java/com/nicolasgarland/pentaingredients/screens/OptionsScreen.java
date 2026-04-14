@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -36,20 +37,31 @@ public class OptionsScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         // Charger la skin
-        Gdx.app.log("DEBUG", "Chemin : " + Gdx.files.internal("assets/skin/uiskin.json").file().getAbsolutePath());
+//        Gdx.app.log("DEBUG", "Chemin : " + Gdx.files.internal("assets/skin/uiskin.json").file().getAbsolutePath());
         skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
 //        skin = createFallbackSkin();
 
         // Créer les boutons
         TextButton returnButton = new TextButton("Retour", skin, "default");
+        TextButton rulesButton = new TextButton("Règles", skin, "default");
 
         // Positionner les boutons
+        rulesButton.setPosition(
+                Gdx.graphics.getWidth() / 2 - rulesButton.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2
+        );
         returnButton.setPosition(
             Gdx.graphics.getWidth() / 2 - returnButton.getWidth() / 2,
             Gdx.graphics.getHeight() / 2 - 50
         );
 
         // Ajouter des actions aux boutons
+        rulesButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                showRulesDialog();
+            }
+        });
         returnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -58,7 +70,26 @@ public class OptionsScreen implements Screen {
         });
 
         // Ajouter les boutons à la scène
+        stage.addActor(rulesButton);
         stage.addActor(returnButton);
+    }
+    
+    private void showRulesDialog() {
+        Dialog rulesDialog = new Dialog("Règles du Jeu", skin) {
+            @Override
+            protected void result(Object object) {
+                // Called when a button is clicked
+            }
+        };
+
+        // Ajouter du texte
+        rulesDialog.text(Gdx.files.internal("assets/rules.txt").readString());
+
+        // Ajouter un bouton "Fermer"
+        rulesDialog.button("Fermer");
+
+        // Afficher le dialog
+        rulesDialog.show(stage);
     }
 
     private Skin createFallbackSkin() {
