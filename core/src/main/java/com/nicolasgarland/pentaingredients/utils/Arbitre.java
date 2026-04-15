@@ -40,7 +40,15 @@ public class Arbitre {
 		if(!isPuisOk) res += "Humpf ! Le sort n'est pas assez puissant !/n";
 		
 		int cout = coutTotal();
-		if(cout <= objectif.objectifs[2])
+		if(cout <= objectif.objectifs[2]) {
+			
+		} else if(cout <= objectif.objectifs[1]) {
+			
+		} else if(cout <= objectif.objectifs[1]) {
+			
+		} else {
+			
+		}
 		// TODO Auto-generated method stub
 		return res;
 	}
