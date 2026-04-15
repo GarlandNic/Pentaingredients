@@ -4,44 +4,34 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.nicolasgarland.pentaingredients.Ingredient;
+import com.nicolasgarland.pentaingredients.utils.Ingredient;
+import com.nicolasgarland.pentaingredients.utils.Positions;
+import com.nicolasgarland.pentaingredients.utils.Positions.Emplacement;
 
 public class InventorySlot extends Actor {
     public static final int SLOT_SIZE = 64;  // Taille d'une case (en pixels)
-    private Ingredient item;              // Objet dans cette case (null si vide)
     private TextureRegion slotTexture;       // Texture de fond de la case
+    private Ingredient item;              // Objet dans cette case (null si vide)
     private boolean isSelected;               // Case sélectionnée ?
+    private Positions.Emplacement posEmpl;
+    private int posInt;
     
     public InventorySlot() {
         this.slotTexture = null;
         this.item = null;
-        this.isSelected = false;
+        this.setSelected(false);
         setSize(SLOT_SIZE, SLOT_SIZE);
-
-        // Ajouter un écouteur pour les clics
-        addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                isSelected = !isSelected;  // Basculer la sélection
-            }
-        });
+        this.setPosEmpl(Emplacement.ETAGERE);
+        this.setPosInt(0);
     }
 
-    public InventorySlot(TextureRegion slotTexture) {
+    public InventorySlot(TextureRegion slotTexture, Emplacement empl, int num) {
         this.slotTexture = slotTexture;
         this.item = null;
-        this.isSelected = false;
+        this.setSelected(false);
         setSize(SLOT_SIZE, SLOT_SIZE);
-
-        // Ajouter un écouteur pour les clics
-        addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                isSelected = !isSelected;  // Basculer la sélection
-            }
-        });
+        this.setPosEmpl(empl);
+        this.setPosInt(num);
     }
 
     @Override
@@ -50,7 +40,7 @@ public class InventorySlot extends Actor {
         batch.draw(slotTexture, getX(), getY(), getWidth(), getHeight());
 
         // Dessiner une bordure si la case est sélectionnée
-        if (isSelected) {
+        if (isSelected()) {
             batch.setColor(Color.YELLOW);
             batch.draw(slotTexture, getX() - 2, getY() - 2, getWidth() + 4, getHeight() + 4);
             batch.setColor(Color.WHITE);
@@ -78,4 +68,28 @@ public class InventorySlot extends Actor {
     public boolean hasItem() {
         return item != null;
     }
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
+	}
+
+	public int getPosInt() {
+		return posInt;
+	}
+
+	public void setPosInt(int posInt) {
+		this.posInt = posInt;
+	}
+
+	public Positions.Emplacement getPosEmpl() {
+		return posEmpl;
+	}
+
+	public void setPosEmpl(Positions.Emplacement posEmpl) {
+		this.posEmpl = posEmpl;
+	}
 }

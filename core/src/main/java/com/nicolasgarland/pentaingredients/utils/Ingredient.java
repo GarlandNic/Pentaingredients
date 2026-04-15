@@ -1,11 +1,7 @@
-package com.nicolasgarland.pentaingredients;
-
-import java.util.List;
+package com.nicolasgarland.pentaingredients.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Json;
 
 public class Ingredient {
 	public static enum Famille {

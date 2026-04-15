@@ -1,4 +1,4 @@
-package com.nicolasgarland.pentaingredients;
+package com.nicolasgarland.pentaingredients.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -16,9 +16,8 @@ public class Positions {
 	public int[][] etagere;
 	
 	public Positions() {
-		int[] vide = {0,0,0,0,0};
-		this.pentaPuissance = vide;
-		this.pentaControle = vide;
+		this.pentaPuissance = new int[]{0,0,0,0,0};
+		this.pentaControle = new int[]{0,0,0,0,0};
 		
 		int[][] etagereDeBase = {
 			{ 1,  2,  3,  4,  5,  6,  0,  0,  0,  0},
@@ -57,10 +56,13 @@ public class Positions {
 		switch(empl) {
 			case PUISSANCE: 
 				pentaPuissance[pos] = ing; 
+				break;
 			case CONTROLE:
 				pentaControle[pos] = ing;
+				break;
 			case ETAGERE:
 				etagere[pos/10][pos%10] = ing; 
+				break;
 		}
 	}
 	

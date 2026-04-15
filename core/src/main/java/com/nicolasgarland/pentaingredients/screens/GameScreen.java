@@ -8,6 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,18 +19,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.nicolasgarland.pentaingredients.Ingredient;
-import com.nicolasgarland.pentaingredients.IngredientsList;
-import com.nicolasgarland.pentaingredients.Level;
 import com.nicolasgarland.pentaingredients.Main;
-import com.nicolasgarland.pentaingredients.Positions;
 import com.nicolasgarland.pentaingredients.actors.InventorySlot;
+import com.nicolasgarland.pentaingredients.utils.Arbitre;
+import com.nicolasgarland.pentaingredients.utils.Ingredient;
+import com.nicolasgarland.pentaingredients.utils.IngredientsList;
+import com.nicolasgarland.pentaingredients.utils.Level;
+import com.nicolasgarland.pentaingredients.utils.Positions;
+import com.nicolasgarland.pentaingredients.utils.Positions.Emplacement;
 
 public class GameScreen implements Screen {
 	private final int PENTAILLE = 650;
@@ -43,8 +48,16 @@ public class GameScreen implements Screen {
     private Level thisLevel;
     private Positions thisPositions;
     private List<Ingredient> listOfIngredients;
-    private Ingredient ingrSelected;
+    private InventorySlot selectedSlot;
     private TextureRegion[] elements;
+	private Image infoIcon;
+	private Label infoName;
+	private Label infoFamily;
+	private Label infoCout;
+	private Table elemTable;
+	private TextureRegion emptySlot;
+	private Label coutTotalLabel;
+	private Arbitre arbitre;
 
 	public GameScreen(Main game, int levelNb) {
         this.game = game;
@@ -64,7 +77,7 @@ public class GameScreen implements Screen {
         } else {
         	Gdx.app.log("ERROR", "in loading ingredients list : " + Gdx.files.internal(filePath).file().getAbsolutePath());
         }
-        this.ingrSelected = null;
+        this.selectedSlot = null;
         this.elements = new TextureRegion[]{
         		new TextureRegion(new Texture(Gdx.files.internal("assets/skin/fire.png"))),
         		new TextureRegion(new Texture(Gdx.files.internal("assets/skin/earth.png"))),
@@ -73,6 +86,8 @@ public class GameScreen implements Screen {
         		new TextureRegion(new Texture(Gdx.files.internal("assets/skin/wind.png"))),
         		new TextureRegion(new Texture(Gdx.files.internal("assets/skin/spirit.png")))
         };
+        this.emptySlot = new TextureRegion(new Texture(Gdx.files.internal("assets/skin/slot.png")));
+        this.arbitre = new Arbitre(thisLevel, listOfIngredients, thisPositions);
 	}
 
 	@Override
@@ -93,14 +108,47 @@ public class GameScreen implements Screen {
         Table metaTable = new Table();
         metaTable.setFillParent(true);
 
+        metaTable.add(addActorsToLeftStage());
         metaTable.add(addActorsToPentagrStage()).expand();
         metaTable.add(addActorsToEtagereStage()).expand();
         
         metaStage.addActor(metaTable);
-        metaTable.setDebug(true);
+//        metaTable.setDebug(true);
 
         // Définir les InputProcessor
         Gdx.input.setInputProcessor(metaStage);
+	}
+
+	private Actor addActorsToLeftStage() {
+		Table mainTable = new Table();
+
+		// bouton de règles
+		TextButton rulesButton = new TextButton("Règles", skin, "default");
+		rulesButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                showRulesDialog();
+            }
+        });
+		mainTable.add(rulesButton).width(160).height(60).pad(10).align(Align.top);
+		mainTable.row();
+		
+		// TODO : bouton d'options ?
+		mainTable.add().center().height(500);
+		mainTable.row();
+		
+		// bouton retour
+        TextButton backButton = new TextButton("Retour", skin);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+            	thisPositions.savePosition(levelNb);
+                game.setScreen(new LevelSelectScreen(game));
+            }
+        });
+        mainTable.add(backButton).width(160).height(60).pad(10).align(Align.bottom);
+		
+		return mainTable;
 	}
 
 	private Table addActorsToEtagereStage() {
@@ -112,17 +160,23 @@ public class GameScreen implements Screen {
 	    mainTable.row();
 		
 	    // table des ingrédients sur les étagères
-		TextureRegion slotTextureFull = new TextureRegion(new Texture(Gdx.files.internal("assets/skin/slot.png")));
-
-		InventorySlot[][] slots = new InventorySlot[10][10];
+//		InventorySlot[][] slots = new InventorySlot[10][10];
         Table inventoryTable = new Table();
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-            	slots[row][col] = new InventorySlot(slotTextureFull);
+            	final InventorySlot slot = new InventorySlot(emptySlot, Emplacement.ETAGERE, row*10+col);
+                
             	int idIng = thisPositions.etagere[row][col];
-            	if(idIng != 0) slots[row][col].setItem(listOfIngredients.get(idIng-1));
-                inventoryTable.add(slots[row][col]).size(InventorySlot.SLOT_SIZE);
+            	if(idIng != 0) slot.setItem(listOfIngredients.get(idIng-1));
+                // Ajouter un écouteur pour les clics
+            	slot.addListener(new ClickListener() {
+            		@Override
+            		public void clicked(InputEvent event, float x, float y) {
+            			newlyClicked(slot);
+            		}
+            	});
+                inventoryTable.add(slot).size(InventorySlot.SLOT_SIZE);
             }
             inventoryTable.row();  // Nouvelle ligne après chaque rangée
         }
@@ -130,56 +184,97 @@ public class GameScreen implements Screen {
         mainTable.row();
         
         // description de l'ingrédient sélectionné
+        Window infoWindow = new Window("Ingrédient sélectionné :", skin);
+        infoWindow.sizeBy(640, 250);
         Table ingrSelectedTable = new Table();
-		
-        ingrSelectedTable.add(new Label("Ingrédient sélectionné :", skin, "title")).colspan(3).center();
-        ingrSelectedTable.row();
-        if(ingrSelected != null) {
-        	Image imgIcon = new Image(ingrSelected.icon);
 
-            ingrSelectedTable.add(imgIcon).size(64).align(Align.left);
-            ingrSelectedTable.add(new Label(ingrSelected.name, skin, "default")).align(Align.left);
-            ingrSelectedTable.add(new Label(ingrSelected.famille.toString(), skin, "default")).align(Align.right);
-            ingrSelectedTable.row();
-            Table elemTable = new Table();
-            for(int i=0 ; i<6 ; i++) {
-            	for(int j=0 ; j < ingrSelected.energies[i] ; j++) {
-            		elemTable.add(new Image(elements[i]));
-            	}
-            }
-            ingrSelectedTable.add(elemTable).colspan(3).center();
-            ingrSelectedTable.row();
-        } else {
-            ingrSelectedTable.add(new Image(slotTextureFull)).size(64).align(Align.left);
-            ingrSelectedTable.add(new Label("Aucun ingrédient sélectionné", skin, "default")).align(Align.left);
-            ingrSelectedTable.add().align(Align.right);
-            ingrSelectedTable.row();
-            ingrSelectedTable.add().colspan(3).center();
-            ingrSelectedTable.row();
-        }
+       	infoIcon = new Image(emptySlot);
+        ingrSelectedTable.add(infoIcon).size(64).align(Align.left);
+        infoName = new Label("Aucun ingrédient sélectionné", skin, "default");
+        ingrSelectedTable.add(infoName).align(Align.left);
+        ingrSelectedTable.row();
+        elemTable = new Table();
+        elemTable.add(new Image()).size(64).center();
+        ingrSelectedTable.add(elemTable).colspan(2).center();
+        ingrSelectedTable.row();
+        infoCout = new Label("", skin, "default");
+        ingrSelectedTable.add(infoCout).align(Align.left);
+        infoFamily = new Label("", skin, "default");
+        ingrSelectedTable.add(infoFamily).align(Align.right);
+        infoWindow.add(ingrSelectedTable);
 		
-		mainTable.add(ingrSelectedTable).center();
+		mainTable.add(infoWindow).center();
         mainTable.row();
 
-        mainTable.setDebug(true);
+        // bouton réinitialiser position
+        TextButton resetButton = new TextButton("Réinitialisation", skin);
+        resetButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+            	thisPositions = new Positions();
+            	thisPositions.savePosition(levelNb);
+            	game.setScreen(new GameScreen(game, levelNb));
+            }
+        });
+        mainTable.add(resetButton).width(240).height(60).pad(10).align(Align.right);
+        
+//        mainTable.setDebug(true);
         return mainTable;
+	}
+
+	protected void newlyClicked(InventorySlot slot) {
+		if(slot.isSelected()) {
+			slot.setSelected(false);
+			selectedSlot = null;
+		} else {
+			if(selectedSlot == null) {
+				slot.setSelected(true);
+				selectedSlot = slot;
+			} else {
+				// permute puis déselectionne tout
+				Ingredient ingr = slot.getItem();
+				slot.setItem(selectedSlot.getItem());
+				selectedSlot.setItem(ingr);
+				thisPositions.swapIngr(slot.getPosInt(), slot.getPosEmpl(), selectedSlot.getPosInt(), selectedSlot.getPosEmpl());
+//		       	Gdx.app.log("DEBUG", "in permut position : " + (new Json()).prettyPrint(thisPositions));
+				thisPositions.savePosition(levelNb);
+				arbitre.setPos(thisPositions);
+				slot.setSelected(false);
+				selectedSlot.setSelected(false);
+				selectedSlot = null;
+				
+				// recalcule le coutTotal
+				coutTotalLabel.setText("Coût total : " + arbitre.coutTotal()) ;
+			}
+		}
+		updateInfoPanel();
+	}
+
+	private void updateInfoPanel() {
+	    if (selectedSlot != null && selectedSlot.getItem() != null) {
+	        Ingredient item = selectedSlot.getItem();
+	        infoIcon.setDrawable(new TextureRegionDrawable(item.getIcon()));
+	    	infoName.setText(item.name);
+	    	infoFamily.setText(item.famille.toString());
+	    	infoCout.setText("Coût : "+item.cout);
+	    	elemTable.clear();
+	        for(int i=0 ; i<6 ; i++) {
+	        	for(int j=0 ; j < item.energies[i] ; j++) {
+	        		elemTable.add(new Image(elements[i])).size(64);
+	        	}
+	        }
+	    } else {
+	    	infoIcon.setDrawable(new TextureRegionDrawable(emptySlot));
+	    	infoName.setText("Aucun ingrédient sélectionné");
+	    	infoFamily.setText("");
+	    	infoCout.setText("");
+	    	elemTable.clear();
+	    	elemTable.add(new Image()).size(64).center();
+	    }
 	}
 
 	private Table addActorsToPentagrStage() {
 		Table mainTable = new Table();
-
-		// bouton de règles
-		TextButton rulesButton = new TextButton("Règles", skin, "default");
-		rulesButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                showRulesDialog();
-            }
-        });
-		mainTable.add(rulesButton).align(Align.left);
-		mainTable.add();
-		mainTable.row();
-		// bouton d'options ?
 		
 		// description du niveau
 		Table levelTable = new Table();
@@ -191,11 +286,15 @@ public class GameScreen implements Screen {
         	for(int j=0 ; j < thisLevel.puissance[i] ; j++) {
         		Image img = new Image(elements[i]);
         		elemTable.add(img).width(64).height(64);
-        	    Gdx.app.log("DEBUG", "element n°"+i+" size : " + img.getWidth()+" x "+img.getHeight());
+//        	    Gdx.app.log("DEBUG", "element n°"+i+" size : " + img.getWidth()+" x "+img.getHeight());
         	}
         }
         elemTable.row();
         levelTable.add(elemTable).colspan(3).center();
+		levelTable.row();
+		levelTable.add(new Image(new Texture(Gdx.files.internal("assets/skin/star.png")))).center();
+		levelTable.add(new Image(new Texture(Gdx.files.internal("assets/skin/star.png")))).center();
+		levelTable.add(new Image(new Texture(Gdx.files.internal("assets/skin/star.png")))).center();
 		levelTable.row();
 		levelTable.add(new Label(""+thisLevel.objectifs[0], skin, "default")).center();
 		levelTable.add(new Label(""+thisLevel.objectifs[1], skin, "default")).center();
@@ -204,16 +303,19 @@ public class GameScreen implements Screen {
 	    
 		mainTable.add(levelTable).colspan(2).center();
 	    mainTable.row();
+	    // TODO : mettre dans une window + supperposer étoile et valeur
 		
 	    // Créer un groupe pour les acteurs du pentagramme
 	    Group pentagramGroup = new Group();
 	    // image pentagramme
 	    Image img = new Image(new Texture(Gdx.files.internal("assets/skin/Pentagramme.PNG")));
-	    Gdx.app.log("DEBUG", "pentagramme size : " + img.getWidth()+" x "+img.getHeight());
+//	    Gdx.app.log("DEBUG", "pentagramme size : " + img.getWidth()+" x "+img.getHeight());
 //	    img.setSize(909, 908);
 	    img.setWidth(PENTAILLE);
 	    img.setHeight(PENTAILLE);
 	    pentagramGroup.addActor(img);
+	    
+	    // TODO : dessiner les lignes avec ombre si synergie
 	    
 	    // 10 slots
 	    TextureRegion slotTexture = new TextureRegion(new Texture(Gdx.files.internal("assets/skin/slot.png")));
@@ -222,15 +324,22 @@ public class GameScreen implements Screen {
 	            {-0.9511f,  0.3090f},  // Position du slot 1 (x, y)
 	            { 0.9511f,  0.3090f},  // Position du slot 2
 	            {-0.5878f, -0.8090f},  // Position du slot 3
-	            { 0f, 1f},  // Position du slot 4
+	            { 0f, 1f},             // Position du slot 4
 	            { 0.5878f, -0.8090f}   // Position du slot 5
 	        };
 	    for(int i=0; i<5; i++) {
-	    	InventorySlot slotP = new InventorySlot(slotTexture);
+	    	final InventorySlot slotP = new InventorySlot(slotTexture, Emplacement.PUISSANCE, i);
 	    	int idIng = thisPositions.pentaPuissance[i];
 	    	if(idIng != 0) slotP.setItem(listOfIngredients.get(idIng-1));
 	    	slotP.setPosition(	PENTAILLE/2*(1+slotPositionsPuissance[i][0])-slotP.getWidth()/2, 
 	    						PENTAILLE/2*(1+slotPositionsPuissance[i][1])-slotP.getHeight()/2);
+            // Ajouter un écouteur pour les clics
+        	slotP.addListener(new ClickListener() {
+        		@Override
+        		public void clicked(InputEvent event, float x, float y) {
+        			newlyClicked(slotP);
+        		}
+        	});
 	    	pentagramGroup.addActor(slotP);
 	    }
 	    
@@ -238,39 +347,66 @@ public class GameScreen implements Screen {
 	            {-0.2225f,  0.3090f},  // Position du slot 1 (x, y)
 	            { 0.2225f,  0.3090f},  // Position du slot 2
 	            { 0.3633f, -0.1176f},  // Position du slot 3
-	            { 0f, -0.3820f},  // Position du slot 4
+	            { 0f, -0.3820f},  	   // Position du slot 4
 	            {-0.3633f, -0.1176f}   // Position du slot 5
 	        };
 	    for(int i=0; i<5; i++) {
-	    	InventorySlot slotC = new InventorySlot(slotTexture);
+	    	InventorySlot slotC = new InventorySlot(slotTexture, Emplacement.CONTROLE, i);
 	    	int idIng = thisPositions.pentaControle[i];
 	    	if(idIng != 0) slotC.setItem(listOfIngredients.get(idIng-1));
 	    	slotC.setPosition(	PENTAILLE/2*(1+slotPositionsControle[i][0])-slotC.getWidth()/2, 
 	    						PENTAILLE/2*(1+slotPositionsControle[i][1])-slotC.getHeight()/2);
+            // Ajouter un écouteur pour les clics
+        	slotC.addListener(new ClickListener() {
+        		@Override
+        		public void clicked(InputEvent event, float x, float y) {
+        			newlyClicked(slotC);
+        		}
+        	});
 	    	pentagramGroup.addActor(slotC);
 	    }
-//	    pentagramGroup.setSize(1000, 1000); // comment changer la taille ??
     	
 	    mainTable.add(pentagramGroup).pad(50).colspan(2).size(PENTAILLE, PENTAILLE);
-	    mainTable.row();
 	    
-		// bouton retour
-        TextButton backButton = new TextButton("Retour", skin);
-        backButton.addListener(new ClickListener() {
+	    mainTable.row();
+	    coutTotalLabel = new Label("Coût total : " + arbitre.coutTotal(), skin, "default");
+	    mainTable.add(coutTotalLabel).align(Align.left);
+	    
+	    TextButton validButton = new TextButton("Lancer l'incantation", skin);
+        validButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
             	thisPositions.savePosition(levelNb);
-                game.setScreen(new LevelSelectScreen(game));
+            	showResultatDialog();
             }
+
         });
-        mainTable.add(backButton).width(200).height(60).pad(10).align(Align.left);
-        mainTable.add().expandX();
+	    mainTable.add(validButton).align(Align.right);
         
-        mainTable.setDebug(true);
+//        mainTable.setDebug(true);
         return mainTable;
 	}
 	
-    private void showRulesDialog() {
+	private void showResultatDialog() {
+        Dialog rulesDialog = new Dialog("Résultat de l'incantation", skin) {
+            @Override
+            protected void result(Object object) {
+                // Called when a button is clicked
+            }
+        };
+
+        // Ajouter du texte
+        rulesDialog.text(arbitre.validerPentacle());
+
+        // Ajouter des bouton 
+        rulesDialog.button("Réessayer");
+        rulesDialog.button("Niveau suivant");
+
+        // Afficher le dialog
+        rulesDialog.show(metaStage);
+	}
+
+	private void showRulesDialog() {
         Dialog rulesDialog = new Dialog("Règles du Jeu", skin) {
             @Override
             protected void result(Object object) {

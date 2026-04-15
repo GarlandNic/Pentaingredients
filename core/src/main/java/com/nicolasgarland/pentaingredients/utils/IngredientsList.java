@@ -1,4 +1,4 @@
-package com.nicolasgarland.pentaingredients;
+package com.nicolasgarland.pentaingredients.utils;
 
 import java.util.List;
 

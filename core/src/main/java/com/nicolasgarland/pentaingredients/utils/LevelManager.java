@@ -1,4 +1,4 @@
-package com.nicolasgarland.pentaingredients;
+package com.nicolasgarland.pentaingredients.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

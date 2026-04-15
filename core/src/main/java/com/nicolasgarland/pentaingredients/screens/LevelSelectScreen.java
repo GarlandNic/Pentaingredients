@@ -47,6 +47,8 @@ public class LevelSelectScreen implements Screen {
 //        Label.LabelStyle labelStyleTitle = new Label.LabelStyle(font, Color.GOLD);
 //        skin.add("title", labelStyleTitle);
 
+        // TODO : ajouter niveau tutoriel
+        
         // Charger les niveaux
         loadLevels();
 
@@ -148,20 +150,14 @@ public class LevelSelectScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
