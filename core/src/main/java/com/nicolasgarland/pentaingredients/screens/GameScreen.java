@@ -400,7 +400,12 @@ public class GameScreen implements Screen {
         Dialog resultDialog = new Dialog("Résultat de l'incantation", skin) {
             @Override
             protected void result(Object object) {
-                // Called when a button is clicked
+                if (object.equals("return")) {
+
+                } else if (object.equals("next")) {
+                	
+                } 
+// TODO Called when a button is clicked
             }
         };
         
@@ -434,12 +439,13 @@ public class GameScreen implements Screen {
         mainTable.add(new Label(valid.description, skin, "default")).colspan(2).center();
 //        resultDialog.text(valid.description);
         
-        resultDialog.addActor(mainTable);
+        resultDialog.getContentTable().add(mainTable).size(1000, 700);
 
         // Ajouter des bouton 
-        resultDialog.button("Réessayer");
-        resultDialog.button("Niveau suivant");
+        resultDialog.button("Réessayer", "return").align(Align.left);
+        resultDialog.button("Niveau suivant", "next").align(Align.right);
 
+//        resultDialog.setSize(1000, 1000);
         // Afficher le dialog
         resultDialog.show(metaStage);
 	}
