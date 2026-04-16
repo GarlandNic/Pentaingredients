@@ -33,6 +33,7 @@ import com.nicolasgarland.pentaingredients.utils.Arbitre;
 import com.nicolasgarland.pentaingredients.utils.Ingredient;
 import com.nicolasgarland.pentaingredients.utils.IngredientsList;
 import com.nicolasgarland.pentaingredients.utils.Level;
+import com.nicolasgarland.pentaingredients.utils.Pentacle;
 import com.nicolasgarland.pentaingredients.utils.Positions;
 import com.nicolasgarland.pentaingredients.utils.Positions.Emplacement;
 
@@ -185,7 +186,6 @@ public class GameScreen implements Screen {
         
         // description de l'ingrédient sélectionné
         Window infoWindow = new Window("Ingrédient sélectionné :", skin);
-        infoWindow.sizeBy(640, 250);
         Table ingrSelectedTable = new Table();
 
        	infoIcon = new Image(emptySlot);
@@ -201,7 +201,7 @@ public class GameScreen implements Screen {
         ingrSelectedTable.add(infoCout).align(Align.left);
         infoFamily = new Label("", skin, "default");
         ingrSelectedTable.add(infoFamily).align(Align.right);
-        infoWindow.add(ingrSelectedTable);
+        infoWindow.add(ingrSelectedTable).size(640, 250);
 		
 		mainTable.add(infoWindow).center();
         mainTable.row();
@@ -258,11 +258,12 @@ public class GameScreen implements Screen {
 	    	infoFamily.setText(item.famille.toString());
 	    	infoCout.setText("Coût : "+item.cout);
 	    	elemTable.clear();
-	        for(int i=0 ; i<6 ; i++) {
-	        	for(int j=0 ; j < item.energies[i] ; j++) {
-	        		elemTable.add(new Image(elements[i])).size(64);
-	        	}
-	        }
+	    	fillElemTable(elemTable, item.energies);
+//	        for(int i=0 ; i<6 ; i++) {
+//	        	for(int j=0 ; j < item.energies[i] ; j++) {
+//	        		elemTable.add(new Image(elements[i])).size(64);
+//	        	}
+//	        }
 	    } else {
 	    	infoIcon.setDrawable(new TextureRegionDrawable(emptySlot));
 	    	infoName.setText("Aucun ingrédient sélectionné");
@@ -271,6 +272,14 @@ public class GameScreen implements Screen {
 	    	elemTable.clear();
 	    	elemTable.add(new Image()).size(64).center();
 	    }
+	}
+
+	private void fillElemTable(Table elemTable, int[] energies) {
+        for(int i=0 ; i<energies.length ; i++) {
+        	for(int j=0 ; j < energies[i] ; j++) {
+        		elemTable.add(new Image(elements[i])).size(64);
+        	}
+        }
 	}
 
 	private Table addActorsToPentagrStage() {
@@ -282,14 +291,14 @@ public class GameScreen implements Screen {
 		levelTable.add(new Label(thisLevel.name, skin, "title")).colspan(3).center();
 		levelTable.row();
         Table elemTable = new Table();
-        for(int i=0 ; i<6 ; i++) {
-        	for(int j=0 ; j < thisLevel.puissance[i] ; j++) {
-        		Image img = new Image(elements[i]);
-        		elemTable.add(img).width(64).height(64);
-//        	    Gdx.app.log("DEBUG", "element n°"+i+" size : " + img.getWidth()+" x "+img.getHeight());
-        	}
-        }
-        elemTable.row();
+        fillElemTable(elemTable, thisLevel.puissance);
+//        for(int i=0 ; i<6 ; i++) {
+//        	for(int j=0 ; j < thisLevel.puissance[i] ; j++) {
+//        		Image img = new Image(elements[i]);
+//        		elemTable.add(img).size(64);
+////        	    Gdx.app.log("DEBUG", "element n°"+i+" size : " + img.getWidth()+" x "+img.getHeight());
+//        	}
+//        }
         levelTable.add(elemTable).colspan(3).center();
 		levelTable.row();
 		levelTable.add(new Image(new Texture(Gdx.files.internal("assets/skin/star.png")))).center();
@@ -388,22 +397,51 @@ public class GameScreen implements Screen {
 	}
 	
 	private void showResultatDialog() {
-        Dialog rulesDialog = new Dialog("Résultat de l'incantation", skin) {
+        Dialog resultDialog = new Dialog("Résultat de l'incantation", skin) {
             @Override
             protected void result(Object object) {
                 // Called when a button is clicked
             }
         };
-
+        
+        Table mainTable = new Table();
+//        mainTable.setFillParent(true);
+        
         // Ajouter du texte
-        rulesDialog.text(arbitre.validerPentacle());
+        mainTable.add(new Label(" Puissance requise : ", skin, "default")).align(Align.left);
+
+        Table objTable = new Table();
+        fillElemTable(objTable, thisLevel.puissance);
+        mainTable.add(objTable).center();
+        mainTable.row();
+        
+        Pentacle valid = arbitre.validerPentacle();
+        
+        mainTable.add(new Label(" Puissance du rituel : ", skin, "default")).align(Align.left);
+//        rulesDialog.text("\n Puissance du rituel : ");
+        Table puissTable = new Table();
+        fillElemTable(puissTable, valid.puissance);
+        mainTable.add(puissTable).center();
+        mainTable.row();
+        
+        mainTable.add(new Label(" Contrôle du rituel : ", skin, "default")).align(Align.left);
+//        rulesDialog.text("\n Contrôle du rituel : ");
+        Table ctrlTable = new Table();
+        fillElemTable(ctrlTable, valid.controle);
+        mainTable.add(ctrlTable).center();
+        mainTable.row();
+        
+        mainTable.add(new Label(valid.description, skin, "default")).colspan(2).center();
+//        resultDialog.text(valid.description);
+        
+        resultDialog.addActor(mainTable);
 
         // Ajouter des bouton 
-        rulesDialog.button("Réessayer");
-        rulesDialog.button("Niveau suivant");
+        resultDialog.button("Réessayer");
+        resultDialog.button("Niveau suivant");
 
         // Afficher le dialog
-        rulesDialog.show(metaStage);
+        resultDialog.show(metaStage);
 	}
 
 	private void showRulesDialog() {

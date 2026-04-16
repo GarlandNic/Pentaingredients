@@ -15,7 +15,7 @@ public class Arbitre {
 		this.pos = pos;
 	}
 
-	public String validerPentacle() {
+	public Pentacle validerPentacle() {
 		String res = "";
 		Boolean isCtrlOk = true;
 		Boolean isPuisOk = true;
@@ -36,21 +36,23 @@ public class Arbitre {
 			if(objectif.puissance[i] > puisTot[i]) isPuisOk = false;
 		}
 		
-		if(!isCtrlOk) res += "Aïe ! Aïe ! Aïe ! Le sort n'est pas sous contrôle !/n";
-		if(!isPuisOk) res += "Humpf ! Le sort n'est pas assez puissant !/n";
+		if(!isCtrlOk) res += "Aïe ! Aïe ! Aïe ! Le sort n'est pas sous contrôle !\n";
+		if(!isPuisOk) res += "Humpf ! Le sort n'est pas assez puissant !\n";
 		
-		int cout = coutTotal();
-		if(cout <= objectif.objectifs[2]) {
-			
-		} else if(cout <= objectif.objectifs[1]) {
-			
-		} else if(cout <= objectif.objectifs[1]) {
-			
-		} else {
-			
+		if(isCtrlOk && isPuisOk) {
+			int cout = coutTotal();
+			if(cout <= objectif.objectifs[2]) {
+				res += "Bravo !";
+			} else if(cout <= objectif.objectifs[1]) {
+				res += "Excellent !";
+			} else if(cout <= objectif.objectifs[0]) {
+				res += "Bien joué !";
+			} else {
+				res += "Peu mieux faire";
+			}
 		}
 		// TODO Auto-generated method stub
-		return res;
+		return new Pentacle(puisTot, ctrlTot, res);
 	}
 
 	public int coutTotal() {
