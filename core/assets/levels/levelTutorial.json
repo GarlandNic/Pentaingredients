@@ -1,0 +1,17 @@
+{
+  "id": 0,
+  "name": "Invocation d'un diablotin de feu",
+  "puissance": [
+  	2,
+  	0,
+  	0,
+  	0,
+  	0,
+  	0
+  ],
+  "objectifs": [
+  	2000, 
+  	1500, 
+  	1400
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": 3,
+  "name": "Conjuration d'une pluie saisonnière",
+  "puissance": [
+  	0,
+  	0,
+  	0,
+  	4,
+  	1,
+  	0
+  ],
+  "objectifs": [
+  	3500, 
+  	2800, 
+  	2400
+  ]
+}

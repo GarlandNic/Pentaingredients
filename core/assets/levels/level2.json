@@ -1,0 +1,17 @@
+{
+  "id": 2,
+  "name": "Invocation d'un singe acrobate",
+  "puissance": [
+  	0,
+  	2,
+  	0,
+  	4,
+  	1,
+  	0
+  ],
+  "objectifs": [
+  	3000, 
+  	2600, 
+  	2300
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": 7,
+  "name": "Conjuration d’un Feu inextinguible",
+  "puissance": [
+  	4,
+  	0,
+  	1,
+  	0,
+  	0,
+  	2
+  ],
+  "objectifs": [
+  	4500, 
+  	3800, 
+  	2900
+  ]
+}

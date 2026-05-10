@@ -1,0 +1,17 @@
+{
+  "id": 5,
+  "name": "Invocation d’un Golem de terre",
+  "puissance": [
+  	1,
+  	4,
+  	0,
+  	1,
+  	0,
+  	2
+  ],
+  "objectifs": [
+  	5000, 
+  	4500, 
+  	3500
+  ]
+}

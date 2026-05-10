@@ -1,0 +1,17 @@
+{
+  "id": 8,
+  "name": "Invocation d’un Guépard bicéphale",
+  "puissance": [
+  	0,
+  	1,
+  	4,
+  	1,
+  	2,
+  	2
+  ],
+  "objectifs": [
+  	7000, 
+  	6300, 
+  	3900
+  ]
+}
