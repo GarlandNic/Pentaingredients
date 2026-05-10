@@ -36,7 +36,7 @@
 	},
 	{
 		id: 6,
-		name: "Toile d'araignée",
+		name: "Toile d'araignÃ©e",
 		famille: ANIMALE,
 		cout: 100,
 		energies: [0,0,0,0,0,1]
@@ -85,21 +85,21 @@
 	},
 	{
 		id: 13,
-		name: "Trèfle à quatre feuilles",
+		name: "TrÃ¨fle Ã  quatre feuilles",
 		famille: MAGIQUE,
 		cout: 300,
 		energies: [0,0,0,1,1,0]
 	},
 	{
 		id: 14,
-		name: "Gui cueilli à la cerpe",
+		name: "Gui cueilli Ã  la cerpe",
 		famille: MAGIQUE,
 		cout: 300,
 		energies: [0,0,1,0,1,0]
 	},
 	{
 		id: 15,
-		name: "Coeur de chêne millénaire",
+		name: "Coeur de chÃªne millÃ©naire",
 		famille: VEGETALE,
 		cout: 400,
 		energies: [0,2,0,1,0,0]
@@ -120,7 +120,7 @@
 	},
 	{
 		id: 18,
-		name: "Venin de vipère",
+		name: "Venin de vipÃ¨re",
 		famille: ANIMALE,
 		cout: 500,
 		energies: [1,0,1,1,0,0]
@@ -134,7 +134,7 @@
 	},
 	{
 		id: 20,
-		name: "Tête de bouc",
+		name: "TÃªte de bouc",
 		famille: ANIMALE,
 		cout: 500,
 		energies: [1,1,0,0,0,1]
@@ -155,7 +155,7 @@
 	},
 	{
 		id: 23,
-		name: "Miroir de l'âme",
+		name: "Miroir de l'Ã¢me",
 		famille: MAGIQUE,
 		cout: 500,
 		energies: [0,1,1,0,1,0]
@@ -211,14 +211,14 @@
 	},
 	{
 		id: 31,
-		name: "Poudre de magnésium",
+		name: "Poudre de magnÃ©sium",
 		famille: MINERALE,
 		cout: 500,
 		energies: [2,0,2,0,0,0]
 	},
 	{
 		id: 32,
-		name: "Poussière d'étoile",
+		name: "PoussiÃ¨re d'Ã©toile",
 		famille: MAGIQUE,
 		cout: 600,
 		energies: [1,1,0,0,2,0]
@@ -232,7 +232,7 @@
 	},
 	{
 		id: 34,
-		name: "Orchidée chantante",
+		name: "OrchidÃ©e chantante",
 		famille: MAGIQUE,
 		cout: 600,
 		energies: [0,1,0,2,1,0]
@@ -281,7 +281,7 @@
 	},
 	{
 		id: 41,
-		name: "Plume de phénix",
+		name: "Plume de phÃ©nix",
 		famille: MAGIQUE,
 		cout: 600,
 		energies: [3,0,0,0,2,0]
@@ -309,7 +309,7 @@
 	},
 	{
 		id: 45,
-		name: "Calice en électrum",
+		name: "Calice en Ã©lectrum",
 		famille: MINERALE,
 		cout: 1000,
 		energies: [1,1,1,0,2,1]
@@ -323,7 +323,7 @@
 	},
 	{
 		id: 47,
-		name: "Crâne de cristal",
+		name: "CrÃ¢ne de cristal",
 		famille: MAGIQUE,
 		cout: 900,
 		energies: [1,1,3,0,0,1]

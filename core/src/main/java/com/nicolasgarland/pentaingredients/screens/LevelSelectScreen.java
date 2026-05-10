@@ -35,7 +35,7 @@ public class LevelSelectScreen implements Screen {
 
 	@Override
 	public void show() {
-	    // Charger le fond d'écran
+	    // TODO Charger le fond d'écran
         background = new Texture(Gdx.files.internal("assets/menu_background.png"));
 
         // Créer le Stage et le Viewport
@@ -63,7 +63,7 @@ public class LevelSelectScreen implements Screen {
 	}
 
 	private void addBackButton() {
-        TextButton backButton = new TextButton("Retour", skin);
+        TextButton backButton = new TextButton("Retour", skin); // TODO taille du bouton
         backButton.setPosition(20, 20);
         backButton.addListener(new ClickListener() {
             @Override
@@ -85,6 +85,7 @@ public class LevelSelectScreen implements Screen {
         levelsTable.add(titleLabel).colspan(3).center();
         levelsTable.row();
 
+        // TODO ajouter des niveaux dans assets/levels/level*.json
         // Ajouter les boutons de niveaux (3 par ligne)
         for (int i = 0; i < levelsNb.size(); i++) {
             if (i % 3 == 0 && i != 0) {
@@ -103,6 +104,7 @@ public class LevelSelectScreen implements Screen {
             
             levelsTable.add(levelButton).width(200).height(60);
         }
+        // TODO ajouter des étoiles pour les niveaux déjà réussis
 
         // Créer un ScrollPane pour permettre le défilement (utile pour mobile)
         ScrollPane scrollPane = new ScrollPane(levelsTable, skin);

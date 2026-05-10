@@ -8,6 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -59,6 +60,14 @@ public class GameScreen implements Screen {
 	private TextureRegion emptySlot;
 	private Label coutTotalLabel;
 	private Arbitre arbitre;
+	private int[] synergies;
+	private int[][][] puisCtrlLignes;
+	private Table[][] puisCtrlTables;
+	private Image[] imgLignes;
+	private TextureRegion zeroLine;
+	private TextureRegion okLine;
+	private TextureRegion doubleLine;
+	
 
 	public GameScreen(Main game, int levelNb) {
         this.game = game;
@@ -88,7 +97,41 @@ public class GameScreen implements Screen {
         		new TextureRegion(new Texture(Gdx.files.internal("assets/skin/spirit.png")))
         };
         this.emptySlot = new TextureRegion(new Texture(Gdx.files.internal("assets/skin/slot.png")));
+        this.zeroLine = new TextureRegion(new Texture(Gdx.files.internal("assets/skin/line-noir.png")));
+        this.okLine = new TextureRegion(new Texture(Gdx.files.internal("assets/skin/line.png")));
+        this.doubleLine = new TextureRegion(new Texture(Gdx.files.internal("assets/skin/line-rouge.png")));
+        this.imgLignes = new Image[] {new Image(okLine), new Image(okLine), new Image(okLine), new Image(okLine), new Image(okLine)};
         this.arbitre = new Arbitre(thisLevel, listOfIngredients, thisPositions);
+        this.synergies = new int[] {1,1,1,1,1};
+        this.puisCtrlLignes = new int[][][] { // [ligne][2][énergies]
+        	{
+        		{0,0,0,0,0,0},
+        		{0,0,0,0,0,0}
+        	},
+        	{
+        		{0,0,0,0,0,0},
+        		{0,0,0,0,0,0}
+        	},
+        	{
+        		{0,0,0,0,0,0},
+        		{0,0,0,0,0,0}
+        	},
+        	{
+        		{0,0,0,0,0,0},
+        		{0,0,0,0,0,0}
+        	},
+        	{
+        		{0,0,0,0,0,0},
+        		{0,0,0,0,0,0}
+        	}
+        };
+        this.puisCtrlTables = new Table[][] {
+        	{new Table(), new Table()},
+        	{new Table(), new Table()},
+        	{new Table(), new Table()},
+        	{new Table(), new Table()},
+        	{new Table(), new Table()}
+        	};
 	}
 
 	@Override
@@ -228,8 +271,10 @@ public class GameScreen implements Screen {
 			selectedSlot = null;
 		} else {
 			if(selectedSlot == null) {
-				slot.setSelected(true);
-				selectedSlot = slot;
+				if(slot.getItem() != null) {
+					slot.setSelected(true);
+					selectedSlot = slot;					
+				}
 			} else {
 				// permute puis déselectionne tout
 				Ingredient ingr = slot.getItem();
@@ -239,12 +284,37 @@ public class GameScreen implements Screen {
 //		       	Gdx.app.log("DEBUG", "in permut position : " + (new Json()).prettyPrint(thisPositions));
 				thisPositions.savePosition(levelNb);
 				arbitre.setPos(thisPositions);
+				
+				if(slot.getPosEmpl()==Emplacement.CONTROLE || slot.getPosEmpl()==Emplacement.PUISSANCE || 
+				   selectedSlot.getPosEmpl()==Emplacement.CONTROLE || selectedSlot.getPosEmpl()==Emplacement.PUISSANCE) {
+					// recalcule le coutTotal
+					coutTotalLabel.setText("Coût total : " + arbitre.coutTotal()) ;
+					
+					//recalcule les lignes et les énergies dessus/dessous
+					for(int i=0; i<5; i++) {
+						synergies[i] = arbitre.multLigneSynergie(i+1);
+						switch(synergies[i]) {
+							case 0:
+								imgLignes[i].setDrawable(new TextureRegionDrawable(zeroLine));
+								break;
+							case 1:
+								imgLignes[i].setDrawable(new TextureRegionDrawable(okLine));
+								break;
+							case 2:
+								imgLignes[i].setDrawable(new TextureRegionDrawable(doubleLine));
+								break;
+						}
+						puisCtrlLignes[i] = arbitre.lignePuisCtrl(i+1);
+						puisCtrlTables[i][0].clear();
+						fillElemTable(puisCtrlTables[i][0], puisCtrlLignes[i][0], 18);
+						puisCtrlTables[i][1].clear();
+						fillElemTable(puisCtrlTables[i][1], puisCtrlLignes[i][1], 18);
+					}
+				}
+				
 				slot.setSelected(false);
 				selectedSlot.setSelected(false);
 				selectedSlot = null;
-				
-				// recalcule le coutTotal
-				coutTotalLabel.setText("Coût total : " + arbitre.coutTotal()) ;
 			}
 		}
 		updateInfoPanel();
@@ -258,7 +328,7 @@ public class GameScreen implements Screen {
 	    	infoFamily.setText(item.famille.toString());
 	    	infoCout.setText("Coût : "+item.cout);
 	    	elemTable.clear();
-	    	fillElemTable(elemTable, item.energies);
+	    	fillElemTable(elemTable, item.energies, 64);
 //	        for(int i=0 ; i<6 ; i++) {
 //	        	for(int j=0 ; j < item.energies[i] ; j++) {
 //	        		elemTable.add(new Image(elements[i])).size(64);
@@ -274,10 +344,10 @@ public class GameScreen implements Screen {
 	    }
 	}
 
-	private void fillElemTable(Table elemTable, int[] energies) {
+	private void fillElemTable(Table elemTable, int[] energies, int taille) {
         for(int i=0 ; i<energies.length ; i++) {
         	for(int j=0 ; j < energies[i] ; j++) {
-        		elemTable.add(new Image(elements[i])).size(64);
+        		elemTable.add(new Image(elements[i])).size(taille);
         	}
         }
 	}
@@ -291,7 +361,7 @@ public class GameScreen implements Screen {
 		levelTable.add(new Label(thisLevel.name, skin, "title")).colspan(3).center();
 		levelTable.row();
         Table elemTable = new Table();
-        fillElemTable(elemTable, thisLevel.puissance);
+        fillElemTable(elemTable, thisLevel.puissance, 64);
 //        for(int i=0 ; i<6 ; i++) {
 //        	for(int j=0 ; j < thisLevel.puissance[i] ; j++) {
 //        		Image img = new Image(elements[i]);
@@ -324,17 +394,68 @@ public class GameScreen implements Screen {
 	    img.setHeight(PENTAILLE);
 	    pentagramGroup.addActor(img);
 	    
-	    // TODO : dessiner les lignes avec ombre si synergie
+	    // dessiner les lignes avec synergies
+	    int[] angleLignes = {0,37,72,108,144};
+	    float[][] centerLignes = {
+	    		{-0.01f, 0.29f},
+	    		{0.47f, -0.77f},
+	    		{0.535f, -0.66f},
+	    		{1.68f, -0.545f},
+	    		{1.60f, -0.43f},
+	    };
+	    for(int i=0; i<5; i++) {
+			synergies[i] = arbitre.multLigneSynergie(i+1);
+			switch(synergies[i]) {
+				case 0:
+					imgLignes[i].setDrawable(new TextureRegionDrawable(zeroLine));
+					break;
+				case 1:
+					imgLignes[i].setDrawable(new TextureRegionDrawable(okLine));
+					break;
+				case 2:
+					imgLignes[i].setDrawable(new TextureRegionDrawable(doubleLine));
+					break;
+			}
+	    	imgLignes[i].setWidth(PENTAILLE-50);
+	    	imgLignes[i].setHeight(128);
+	    	imgLignes[i].setRotation(angleLignes[i]);
+	    	imgLignes[i].setPosition(PENTAILLE/2*(1+centerLignes[i][0])-imgLignes[i].getWidth()/2, 
+									 PENTAILLE/2*(1+centerLignes[i][1])-imgLignes[i].getHeight()/2);
+	    	
+	    	pentagramGroup.addActor(imgLignes[i]);
+	    }
+	    
+	    // dessiner la puissance et le controle
+	    int[] angleTables = {0,37,72,-72,-36};
+	    float[][][] centerTables = {
+	    		{{0f, 0.34f},     {0f, 0.24f}},
+	    		{{0.2f, -0.3f},   {0.14f, -0.20f}},
+	    		{{-0.35f, 0.09f}, {-0.23f, 0.08f}},
+	    		{{0.34f, 0.09f},  {0.22f, 0.08f}},
+	    		{{-0.2f, -0.3f},  {-0.14f, -0.2f}}
+	    };
+	    for(int i=0; i<5; i++) {
+			puisCtrlLignes[i] = arbitre.lignePuisCtrl(i+1);
+	    	for(int pc=0; pc<2; pc++) {
+				puisCtrlTables[i][pc].clear();
+				fillElemTable(puisCtrlTables[i][pc], puisCtrlLignes[i][pc], 18);
+				puisCtrlTables[i][pc].setTransform(true);
+				puisCtrlTables[i][pc].setRotation(angleTables[i]);
+				puisCtrlTables[i][pc].setPosition(PENTAILLE/2*(1+centerTables[i][pc][0])-puisCtrlTables[i][pc].getWidth()/2, 
+						 			  			  PENTAILLE/2*(1+centerTables[i][pc][1])-puisCtrlTables[i][pc].getHeight()/2);
+//				puisCtrlTables[i][pc].debug();
+	    		pentagramGroup.addActor(puisCtrlTables[i][pc]);
+	    	}
+	    }
 	    
 	    // 10 slots
-	    TextureRegion slotTexture = new TextureRegion(new Texture(Gdx.files.internal("assets/skin/slot.png")));
-	    
+	    TextureRegion slotTexture = new TextureRegion(new Texture(Gdx.files.internal("assets/skin/circle.png")));
 	    float[][] slotPositionsPuissance = {
-	            {-0.9511f,  0.3090f},  // Position du slot 1 (x, y)
-	            { 0.9511f,  0.3090f},  // Position du slot 2
-	            {-0.5878f, -0.8090f},  // Position du slot 3
-	            { 0f, 1f},             // Position du slot 4
-	            { 0.5878f, -0.8090f}   // Position du slot 5
+	            {-0.915f,  0.29f},  // Position du slot 1 (x, y)
+	            { 0.915f,  0.29f},  // Position du slot 2
+	            {-0.57f, -0.80f},  // Position du slot 3
+	            { 0f, 0.97f},             // Position du slot 4
+	            { 0.57f, -0.80f}   // Position du slot 5
 	        };
 	    for(int i=0; i<5; i++) {
 	    	final InventorySlot slotP = new InventorySlot(slotTexture, Emplacement.PUISSANCE, i);
@@ -353,11 +474,11 @@ public class GameScreen implements Screen {
 	    }
 	    
 	    float[][] slotPositionsControle = {
-	            {-0.2225f,  0.3090f},  // Position du slot 1 (x, y)
-	            { 0.2225f,  0.3090f},  // Position du slot 2
-	            { 0.3633f, -0.1176f},  // Position du slot 3
-	            { 0f, -0.3820f},  	   // Position du slot 4
-	            {-0.3633f, -0.1176f}   // Position du slot 5
+	            {-0.215f,  0.29f},  // Position du slot 1 (x, y)
+	            { 0.215f,  0.29f},  // Position du slot 2
+	            { 0.35f, -0.125f},  // Position du slot 3
+	            { 0f, -0.382f},  	   // Position du slot 4
+	            {-0.35f, -0.125f}   // Position du slot 5
 	        };
 	    for(int i=0; i<5; i++) {
 	    	InventorySlot slotC = new InventorySlot(slotTexture, Emplacement.CONTROLE, i);
@@ -401,11 +522,17 @@ public class GameScreen implements Screen {
             @Override
             protected void result(Object object) {
                 if (object.equals("return")) {
-
-                } else if (object.equals("next")) {
                 	
+                } else if (object.equals("next")) {
+                	String filePath = "assets/levels/level" + (levelNb+1) + ".json";
+                    if (Gdx.files.internal(filePath).exists()) {
+                        game.setScreen(new GameScreen(game, levelNb+1));
+                    } else {
+                    	// renvoyer vers selection des niveaux
+                    	Gdx.app.log("ERROR", "in loading level : " + Gdx.files.internal(filePath).file().getAbsolutePath());
+                    	game.setScreen(new LevelSelectScreen(game));
+                    }
                 } 
-// TODO Called when a button is clicked
             }
         };
         
@@ -416,7 +543,7 @@ public class GameScreen implements Screen {
         mainTable.add(new Label(" Puissance requise : ", skin, "default")).align(Align.left);
 
         Table objTable = new Table();
-        fillElemTable(objTable, thisLevel.puissance);
+        fillElemTable(objTable, thisLevel.puissance, 64);
         mainTable.add(objTable).center();
         mainTable.row();
         
@@ -425,14 +552,14 @@ public class GameScreen implements Screen {
         mainTable.add(new Label(" Puissance du rituel : ", skin, "default")).align(Align.left);
 //        rulesDialog.text("\n Puissance du rituel : ");
         Table puissTable = new Table();
-        fillElemTable(puissTable, valid.puissance);
+        fillElemTable(puissTable, valid.puissance, 64);
         mainTable.add(puissTable).center();
         mainTable.row();
         
         mainTable.add(new Label(" Contrôle du rituel : ", skin, "default")).align(Align.left);
 //        rulesDialog.text("\n Contrôle du rituel : ");
         Table ctrlTable = new Table();
-        fillElemTable(ctrlTable, valid.controle);
+        fillElemTable(ctrlTable, valid.controle, 64);
         mainTable.add(ctrlTable).center();
         mainTable.row();
         
@@ -442,7 +569,7 @@ public class GameScreen implements Screen {
         resultDialog.getContentTable().add(mainTable).size(1000, 700);
 
         // Ajouter des bouton 
-        resultDialog.button("Réessayer", "return").align(Align.left);
+        resultDialog.button("Continuer d'essayer", "return").align(Align.left);
         resultDialog.button("Niveau suivant", "next").align(Align.right);
 
 //        resultDialog.setSize(1000, 1000);

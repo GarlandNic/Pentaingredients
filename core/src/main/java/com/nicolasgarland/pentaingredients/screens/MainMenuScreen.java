@@ -29,7 +29,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
-        // Charger le fond
+        // TODO Charger le fond
         background = new Texture(Gdx.files.internal("assets/menu_background.png"));
 
         // Créer la scène et le viewport
@@ -82,6 +82,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
+        // TODO taille des boutons
         // Ajouter les boutons à la scène
         stage.addActor(playButton);
         stage.addActor(optionsButton);

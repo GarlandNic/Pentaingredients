@@ -29,7 +29,7 @@ public class OptionsScreen implements Screen {
 
     @Override
     public void show() {
-        // Charger le fond
+        // TODO Charger le fond
         background = new Texture(Gdx.files.internal("assets/menu_background.png"));
 
         // Créer la scène et le viewport
@@ -41,6 +41,8 @@ public class OptionsScreen implements Screen {
         skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
 //        skin = createFallbackSkin();
 
+        // TODO ajouter de quoi faire varier le son, et ajouter des sons
+        
         // Créer les boutons
         TextButton returnButton = new TextButton("Retour", skin, "default");
         TextButton rulesButton = new TextButton("Règles", skin, "default");
@@ -65,10 +67,11 @@ public class OptionsScreen implements Screen {
         returnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game)); // À créer plus tard
+                game.setScreen(new MainMenuScreen(game));
             }
         });
 
+        // TODO taille des boutons
         // Ajouter les boutons à la scène
         stage.addActor(rulesButton);
         stage.addActor(returnButton);
@@ -84,6 +87,7 @@ public class OptionsScreen implements Screen {
 
         // Ajouter du texte
         rulesDialog.text(Gdx.files.internal("assets/rules.txt").readString());
+        // TODO écrire les règles
 
         // Ajouter un bouton "Fermer"
         rulesDialog.button("Fermer");
