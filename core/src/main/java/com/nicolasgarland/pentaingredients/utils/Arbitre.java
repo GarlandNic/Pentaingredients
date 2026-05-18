@@ -22,7 +22,7 @@ public class Arbitre {
 		
 		int[][][] lignes = new int[5][2][6];
 		
-		for(int a=0; a<5; a++) lignes[a] = lignePuisCtrl(a);
+		for(int a=0; a<5; a++) lignes[a] = lignePuisCtrl(a+1);
 		
 		int[] puisTot = new int[] {0,0,0,0,0,0};
 		int[] ctrlTot = new int[] {0,0,0,0,0,0};
@@ -32,8 +32,8 @@ public class Arbitre {
 				puisTot[i] += lignes[a][0][i];
 				ctrlTot[i] += lignes[a][1][i];
 			}
-			if(ctrlTot[i] > puisTot[i]) isCtrlOk = false;
-			if(objectif.puissance[i] > puisTot[i]) isPuisOk = false;
+			if(ctrlTot[i] < puisTot[i]) isCtrlOk = false;
+			if(puisTot[i] < objectif.puissance[i]) isPuisOk = false;
 		}
 		
 		if(!isCtrlOk) res += "Aïe ! Aïe ! Aïe ! Le sort n'est pas sous contrôle !\n";
@@ -156,7 +156,7 @@ public class Arbitre {
 		return new int[][] {puis,ctrl};
 	}
 	
-	public int multLigneSynergie(int num) { // 0, 1 ou 2
+	public int multLigneSynergie(int num) { // return 0, 1 ou 2
 		int i=0; // id ingr 1 
 		int j=0; // id ingr 2
 		switch(num) {
