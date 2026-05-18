@@ -43,6 +43,8 @@ public class OptionsScreen implements Screen {
 
         // TODO ajouter de quoi faire varier le son, et ajouter des sons
         
+        // TODO ajouter de quoi faire varier la résolution
+        
         // Créer les boutons
         TextButton returnButton = new TextButton("Retour", skin, "default");
         TextButton rulesButton = new TextButton("Règles", skin, "default");
